@@ -1,23 +1,28 @@
 const express = require("express");
 const path = require("path");
+const ejs = require("ejs");
 const app = express();
 
-const myLogger = (req, res, next) => {
-  console.log("this is a middleware");
-  next();
-};
+// TEMPLATE ENGINE
+app.set("view engine", "ejs");
 
 // MIDDLEWARES
 app.use(express.static("public"));
-app.use(myLogger);
 
 // ROUTE
 app.get("/", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "temp/index.html"));
+  res.render("index");
 });
 
-const port = 3000;
+app.get("/about", (req, res) => {
+  res.render("about");
+});
+app.get("/add", (req, res) => {
+  res.render("add");
+});
 
+// LISTEN PORT
+const port = 3000;
 app.listen(port, () => {
   console.log(`Sunucu ${port} portunda dinlemeye başladı`);
 });
