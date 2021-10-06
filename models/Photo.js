@@ -1,21 +1,21 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-// CONNECT DB
-mongoose.connect("mongodb://localhost/pcat-test-db", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-
 // CREATE SCHEMA
 const PhotoSchema = new Schema({
   title: String,
   description: String,
+  image: String,
+  dateCreated: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 // CREATE MODEL
 const Photo = mongoose.model("Photo", PhotoSchema);
 
+module.exports = Photo;
 /*
 // CREATE DOCUMENT
 Photo.create({

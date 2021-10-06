@@ -1,7 +1,16 @@
 const express = require("express");
-const path = require("path");
+const mongoose = require("mongoose");
 const ejs = require("ejs");
+const path = require("path");
+const Photo = require("./models/Photo");
+
 const app = express();
+
+// CONNECT DB
+mongoose.connect("mongodb://localhost/pcat-test-db", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 // TEMPLATE ENGINE
 app.set("view engine", "ejs");
@@ -24,8 +33,8 @@ app.get("/add", (req, res) => {
   res.render("add");
 });
 
-app.post("/photos", (req, res) => {
-  console.log(req.body);
+app.post("/photos", async (req, res) => {
+  await Photo.create(req.body);
   res.redirect("/");
 });
 
