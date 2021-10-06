@@ -21,8 +21,11 @@ app.use(express.urlencoded({ extended: true })); // post işleminde form datalar
 app.use(express.json()); //post metodunda urlde gönderilen datayı json formatına çevirmek için kullanıyoruz
 
 // ROUTE
-app.get("/", (req, res) => {
-  res.render("index");
+app.get("/", async (req, res) => {
+  const photos = await Photo.find(); // tüm fotoları dbden çekip anasayfaya gönderdik
+  res.render("index", {
+    photos: photos,
+  });
 });
 
 app.get("/about", (req, res) => {
