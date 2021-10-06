@@ -23,7 +23,12 @@ app.use(express.static("public")); // sayfaların public klasöründeki statik d
 app.use(express.urlencoded({ extended: true })); // post işleminde form dataların okuyabilmek ve db'ye gönderebilmek için bu iki middleware gerekli
 app.use(express.json()); //post metodunda urlde gönderilen datayı json formatına çevirmek için kullanıyoruz
 app.use(fileUpload()); // dosya yükelemede gerekli fileupload middlewareini kullanmak için bu kodu yazıyoruz
-app.use(methodOverride("_method")); // override with POST having ?_method=DELETE
+app.use(
+  methodOverride("_method", {
+    methods: ["POST", "GET"],
+  })
+); // override with POST having ?_method=DELETE
+// hangi methodları override edeceğini belirtiyoruz cünkü photo delete işlemi a linki üzerinden get metodu ile yapılıyor
 
 // ROUTE
 app.get("/", async (req, res) => {
@@ -42,7 +47,7 @@ app.get("/add", (req, res) => {
 });
 
 app.post("/photos", async (req, res) => {
-  console.log(req.files.image);
+  // console.log(req.files.image);
   // await Photo.create(req.body);
   // res.redirect("/");
 
@@ -85,6 +90,14 @@ app.put("/photos/:id", async (req, res) => {
   photo.save();
 
   res.redirect(`/photos/${req.params.id}`);
+});
+
+app.delete("/photos/:id", async (req, res) => {
+  const photo = await Photo.findOne({ _id: req.params.id });
+  let deletedImage = __dirname + "/public" + photo.image;
+  fs.unlinkSync(deletedImage);
+  await Photo.findByIdAndDelete({ _id: req.params.id });
+  res.redirect(`/`);
 });
 
 // LISTEN PORT
